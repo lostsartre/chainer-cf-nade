@@ -1,5 +1,5 @@
 import argparse
-import cPickle as pickle
+import pickle as pickle
 import numpy as np
 
 parser = argparse.ArgumentParser(description='Convert train and test data')
@@ -44,11 +44,11 @@ def load_data(file_path, item_id_to_index):
     item_num = np.max(items) + 1
     return user_num, item_num, (users, items, ratings, timestamps)
 
-print 'Loading data set...'
+print('Loading data set...')
 item_id_to_index = load_item_list(args.item_list_file)
 user_num, item_num, train_data = load_data(args.rating_file, item_id_to_index)
 
-print 'Saving data set'
+print('Saving data set')
 with open(args.out_file, 'wb') as f:
     m = {
         'user_num': user_num,
@@ -59,4 +59,4 @@ with open(args.out_file, 'wb') as f:
         'rating_unit': rating_unit
     }
     pickle.dump(m, f, pickle.HIGHEST_PROTOCOL)
-print 'Completed'
+print('Completed')

@@ -1,5 +1,5 @@
 import argparse
-import cPickle as pickle
+import pickle as pickle
 import numpy as np
 
 parser = argparse.ArgumentParser(description='Convert train and test data')
@@ -39,14 +39,14 @@ def load_data(file_path):
         timestamps[i] = float(timestamp)
     return (users, items, ratings, timestamps)
 
-print 'Loading information...'
+print('Loading information...')
 user_num, item_num = load_info(args.info_file)
-print 'Loading training data set...'
+print('Loading training data set...')
 train_data = load_data(args.train_file)
-print 'Loading test data set...'
+print('Loading test data set...')
 test_data = load_data(args.test_file)
 
-print 'Saving data set'
+print('Saving data set')
 with open(args.out_file, 'wb') as f:
     pickle.dump((user_num, item_num, train_data, test_data), f, pickle.HIGHEST_PROTOCOL)
-print 'Completed'
+print('Completed')

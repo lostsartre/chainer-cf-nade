@@ -1,5 +1,5 @@
 import argparse
-import cPickle as pickle
+import pickle as pickle
 import glob
 import numpy as np
 import os
@@ -60,7 +60,7 @@ if __name__ == '__main__':
     optimizer.add_hook(chainer.optimizer.WeightDecay(args.weight_decay))
 
     # split train/valid/test data
-    print 'preprocessing...'
+    print('preprocessing...')
     data_length = len(train_users)
     order = np.random.permutation(data_length)
     if test_data is None:
@@ -86,7 +86,7 @@ if __name__ == '__main__':
     train_items = train_items[train_order]
     train_ratings = train_ratings[train_order]
 
-    print 'preprocessing train data...'
+    print('preprocessing train data...')
     column_num = np.max(np.bincount(train_users))
     train_x = np.full((user_num, column_num), -1, dtype=np.int32)
     train_r = np.full((user_num, column_num), -1, dtype=np.int32)
@@ -98,7 +98,7 @@ if __name__ == '__main__':
         train_r[u, j] = train_ratings[i]
         item_count[u] += 1
 
-    print 'preprocessing valid data...'
+    print('preprocessing valid data...')
     column_num = np.max(np.bincount(valid_users))
     valid_x = np.full((user_num, column_num), -1, dtype=np.int32)
     valid_r = np.full((user_num, column_num), -1, dtype=np.int32)
@@ -110,7 +110,7 @@ if __name__ == '__main__':
         valid_r[u, j] = valid_ratings[i]
         item_count[u] += 1
 
-    print 'preprocessing test data...'
+    print('preprocessing test data...')
     column_num = np.max(np.bincount(test_users))
     test_x = np.full((user_num, column_num), -1, dtype=np.int32)
     test_r = np.full((user_num, column_num), -1, dtype=np.int32)
@@ -124,12 +124,12 @@ if __name__ == '__main__':
 
     progress_state = {'valid_accuracy': 100, 'test_accuracy': 100}
     def progress_func(epoch, loss, accuracy, valid_loss, valid_accuracy, test_loss, test_accuracy):
-        print 'epoch: {} done'.format(epoch)
-        print('train mean loss={}, accuracy={}'.format(loss, accuracy))
+        print('epoch: {} done'.format(epoch))
+        print(('train mean loss={}, accuracy={}'.format(loss, accuracy)))
         if valid_loss is not None and valid_accuracy is not None:
-            print('valid mean loss={}, accuracy={}'.format(valid_loss, valid_accuracy))
+            print(('valid mean loss={}, accuracy={}'.format(valid_loss, valid_accuracy)))
         if test_loss is not None and test_accuracy is not None:
-            print('test mean loss={}, accuracy={}'.format(test_loss, test_accuracy))
+            print(('test mean loss={}, accuracy={}'.format(test_loss, test_accuracy)))
         if valid_accuracy < progress_state['valid_accuracy']:
             serializers.save_npz(args.output, net)
             progress_state['valid_accuracy'] = valid_accuracy
@@ -140,9 +140,9 @@ if __name__ == '__main__':
         if args.lr_decay_iter > 0 and epoch % args.lr_decay_iter == 0:
             optimizer.alpha *= args.lr_decay_ratio
 
-    print 'start training'
+    print('start training')
     trainer = CfNadeTrainer(net, optimizer, args.iter, args.batch_size, device_id, ordinal_weight=args.ordinal_weight, rating_unit=rating_unit)
     trainer.fit(train_x, train_r, valid_x, valid_r, test_x, test_r, callback=progress_func)
     serializers.save_npz(args.output, net)
 
-    print('final test accuracy={}'.format(progress_state['test_accuracy']))
+    print(('final test accuracy={}'.format(progress_state['test_accuracy'])))
