@@ -1,3 +1,4 @@
+# coding=utf-8
 import argparse
 import pickle as pickle
 import numpy as np
